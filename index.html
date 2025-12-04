@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contextly - AI Grammar & Translation Assistant</title>
+    <meta name="description" content="Fix grammar, translate, and summarize text instantly on any webpage using Google Gemini AI. Privacy-focused, open-source Chrome Extension.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            lime: '#bef264', // Matches your icon color
+                            dark: '#111827', // Gray-900
+                            light: '#F9FAFB', // Gray-50
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar to match extension */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: #9ca3af; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-900 bg-brand-light antialiased selection:bg-brand-lime selection:text-brand-dark">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <!-- Contextly Logo Icon -->
+                <svg width="32" height="32" viewBox="-2.4 -2.4 28.8 28.8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="-2.4" y="-2.4" width="28.8" height="28.8" rx="8.64" fill="#111827"/>
+                    <path d="M23.228 8.018a1 1 0 0 0 0-1.414l-.707-.708a1 1 0 0 0-1.414 0l-11.02 11.016a1 1 0 0 0-.001 1.415l.707.707a1 1 0 0 0 1.414 0zm-5.999 0a1 1 0 0 0 0-1.414l-.708-.708a1 1 0 0 0-1.414 0l-9.562 9.562-2.777-2.777a1 1 0 0 0-1.414 0l-.708.707a1 1 0 0 0 0 1.414l4.192 4.192a1 1 0 0 0 1.415 0z" fill="#bef264"/>
+                </svg>
+                <span class="font-bold text-lg tracking-tight">Contextly</span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
+                <a href="#features" class="hover:text-gray-900 transition-colors">Features</a>
+                <a href="#how-it-works" class="hover:text-gray-900 transition-colors">How it Works</a>
+                <a href="#faq" class="hover:text-gray-900 transition-colors">FAQ</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/tamnguyenvan/contextly" target="_blank" class="hidden md:block text-gray-500 hover:text-gray-900 transition-colors">
+                    <svg height="24" width="24" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                </a>
+                <a href="#" class="bg-brand-dark text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-black transition-all shadow-lg shadow-gray-200 active:scale-95 flex items-center gap-2">
+                    <span>Add to Chrome</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-20 px-6 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 shadow-sm mb-6 animate-slide-up">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-xs font-semibold text-gray-600">Powered by Google Gemini AI</span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold text-brand-dark tracking-tight mb-6 animate-slide-up" style="animation-delay: 0.1s;">
+                Understand & Perfect <br/>
+                <span class="relative inline-block">
+                    Any Text
+                    <svg class="absolute w-full h-3 -bottom-1 left-0 text-brand-lime -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" />
+                    </svg>
+                </span>
+                on the Web
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed animate-slide-up" style="animation-delay: 0.2s;">
+                Contextly is an open-source browser extension that fixes grammar, translates, and summarizes text instantly. Bring your own API key. No subscriptions.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 animate-slide-up" style="animation-delay: 0.3s;">
+                <a href="#" class="w-full sm:w-auto px-8 py-4 bg-brand-dark text-white rounded-xl font-bold text-lg shadow-xl shadow-gray-200 hover:bg-black transition-all hover:-translate-y-1">
+                    Add to Chrome — It's Free
+                </a>
+                <a href="#how-it-works" class="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-xl font-bold text-lg hover:bg-gray-50 transition-all">
+                    How it works
+                </a>
+            </div>
+
+            <!-- UI Mockup (Built with CSS) -->
+            <div class="relative max-w-3xl mx-auto animate-slide-up" style="animation-delay: 0.4s;">
+                <!-- Decorative blurred glow -->
+                <div class="absolute -inset-1 bg-gradient-to-r from-brand-lime to-blue-300 rounded-2xl blur opacity-30"></div>
+                
+                <div class="relative bg-white rounded-2xl border border-gray-200 shadow-2xl overflow-hidden p-8 md:p-12 text-left">
+                    <div class="absolute top-0 left-0 w-full h-8 bg-gray-50 border-b border-gray-100 flex items-center px-4 gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    </div>
+
+                    <div class="mt-4 font-serif text-xl md:text-2xl text-gray-400 leading-relaxed">
+                        Artificial intelligence is transforming how we communicate. However, 
+                        <span class="bg-blue-100 text-gray-900 px-1 rounded relative group cursor-text">
+                            it often feels disconnected from our daily workflows
+                            <!-- Floating Bar Simulation -->
+                            <div class="absolute -top-14 left-1/2 -translate-x-1/2 hidden group-hover:flex items-center bg-white px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 animate-float z-20">
+                                <button class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-full">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                    <span class="text-xs font-semibold">Fix</span>
+                                </button>
+                                <div class="w-[1px] h-4 bg-gray-200 mx-1"></div>
+                                <button class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-full">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+                                    <span class="text-xs font-semibold">Translate</span>
+                                </button>
+                            </div>
+                        </span>. 
+                        We aim to bridge that gap seamlessly.
+                    </div>
+
+                    <!-- Modal Simulation (Result) -->
+                    <div class="absolute bottom-6 right-6 md:right-12 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 p-4 animate-[float_8s_ease-in-out_infinite] delay-1000 hidden md:block">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-6 h-6 rounded-full bg-brand-lime flex items-center justify-center">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                            </div>
+                            <span class="font-bold text-sm">Grammar Check</span>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="text-gray-400 line-through decoration-red-400 decoration-2">it often feels disconnected</div>
+                            <div class="text-gray-900 font-medium bg-lime-50 p-2 rounded border border-brand-lime/20">
+                                it often feels disconnected from our workflow
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-brand-dark mb-4">Everything you need, one click away</h2>
+                <p class="text-gray-500">Powerful AI features integrated directly into your browsing experience.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="p-8 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-gray-100 group">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-brand-dark mb-6 group-hover:scale-110 transition-transform">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Grammar Correction</h3>
+                    <p class="text-gray-500 leading-relaxed">Fix spelling and grammar errors instantly. Contextly understands context to provide the most accurate corrections compared to basic spellcheckers.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="p-8 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-gray-100 group">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-brand-dark mb-6 group-hover:scale-110 transition-transform">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Smart Translation</h3>
+                    <p class="text-gray-500 leading-relaxed">Translate selected text into over 50 languages. Auto-detection handles the source language so you don't have to guess.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="p-8 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-gray-100 group">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-brand-dark mb-6 group-hover:scale-110 transition-transform">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Instant Summaries</h3>
+                    <p class="text-gray-500 leading-relaxed">Too long; didn't read? Get concise bullet-point summaries of long articles or emails with a single click.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how-it-works" class="py-24 border-t border-gray-100">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16">How it works</h2>
+            
+            <div class="space-y-12">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="w-12 h-12 rounded-full bg-brand-dark text-white flex items-center justify-center font-bold text-xl flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold mb-2">Configure your API Key</h3>
+                        <p class="text-gray-500">Contextly is BYOK (Bring Your Own Key). Get a free API key from Google AI Studio and enter it in the extension settings. This ensures your usage is private and free.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="w-12 h-12 rounded-full bg-brand-lime text-brand-dark flex items-center justify-center font-bold text-xl flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold mb-2">Select any text</h3>
+                        <p class="text-gray-500">Highlight a sentence, a paragraph, or an entire email body on any website.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="w-12 h-12 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-xl flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold mb-2">Choose your action</h3>
+                        <p class="text-gray-500">A small floating menu will appear. Choose to fix grammar, translate, or summarize. The result appears in a clean overlay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy / Open Source -->
+    <section class="py-24 bg-brand-dark text-white overflow-hidden relative">
+        <!-- Background decoration -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-lime opacity-10 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+
+        <div class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+            <div class="flex-1">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Privacy First. <br/>Open Source Forever.</h2>
+                <div class="space-y-6 text-gray-400">
+                    <p>
+                        We believe AI tools should be transparent. Contextly does not have a backend server that stores your data.
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <svg class="text-brand-lime w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Direct connection to Google Gemini API</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <svg class="text-brand-lime w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Your API Key is stored locally in Chrome</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <svg class="text-brand-lime w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Full source code available on GitHub</span>
+                        </li>
+                    </ul>
+                    <div class="pt-4">
+                        <a href="https://github.com/tamnguyenvan/contextly" target="_blank" class="text-brand-lime font-bold hover:underline flex items-center gap-2">
+                            Review the code 
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 w-full max-w-sm">
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-lime flex items-center justify-center text-brand-dark">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                        </div>
+                        <div>
+                            <div class="font-bold text-white">Your Key, Your Control</div>
+                            <div class="text-xs text-gray-400">Stored locally via Chrome Storage</div>
+                        </div>
+                    </div>
+                    <div class="bg-black/30 rounded-lg p-3 font-mono text-xs text-gray-400 break-all">
+                        AIzaSy...<span class="blur-sm">D5G7H8J9K0L1M2N3P4Q5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-24 bg-white">
+        <div class="max-w-3xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4">
+                <details class="group bg-gray-50 rounded-xl">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-6">
+                        <span>Is Contextly free to use?</span>
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <div class="text-gray-500 px-6 pb-6 pt-0 animate-slide-up">
+                        Yes! The extension itself is free and open-source. However, it requires a Google Gemini API Key. Google provides a generous free tier for the Gemini API that is sufficient for most personal use cases.
+                    </div>
+                </details>
+
+                <details class="group bg-gray-50 rounded-xl">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-6">
+                        <span>Where is my data sent?</span>
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <div class="text-gray-500 px-6 pb-6 pt-0 animate-slide-up">
+                        Your selected text is sent directly from your browser to Google's Gemini API servers for processing. We (the developers) do not collect, store, or see your data.
+                    </div>
+                </details>
+
+                <details class="group bg-gray-50 rounded-xl">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-6">
+                        <span>How do I get an API Key?</span>
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <div class="text-gray-500 px-6 pb-6 pt-0 animate-slide-up">
+                        You can generate an API key for free at <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-brand-dark underline font-bold">Google AI Studio</a>. Once you have it, paste it into the Contextly extension settings.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-12">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <svg width="24" height="24" viewBox="-2.4 -2.4 28.8 28.8" fill="none" xmlns="http://www.w3.org/2000/svg" class="grayscale opacity-50">
+                    <rect x="-2.4" y="-2.4" width="28.8" height="28.8" rx="8.64" fill="#111827"/>
+                    <path d="M23.228 8.018a1 1 0 0 0 0-1.414l-.707-.708a1 1 0 0 0-1.414 0l-11.02 11.016a1 1 0 0 0-.001 1.415l.707.707a1 1 0 0 0 1.414 0zm-5.999 0a1 1 0 0 0 0-1.414l-.708-.708a1 1 0 0 0-1.414 0l-9.562 9.562-2.777-2.777a1 1 0 0 0-1.414 0l-.708.707a1 1 0 0 0 0 1.414l4.192 4.192a1 1 0 0 0 1.415 0z" fill="#bef264"/>
+                </svg>
+                <span class="text-gray-400 text-sm font-medium">© 2024 Contextly. Open Source MIT License.</span>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <a href="https://github.com/tamnguyenvan/contextly" class="text-gray-400 hover:text-gray-900 transition-colors">GitHub</a>
+                <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors">Twitter</a>
+                <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
